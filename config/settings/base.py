@@ -42,7 +42,7 @@ THIRD_PARTY_APPS = [
 ]
 
 
-LOCAL_APPS = []
+LOCAL_APPS = ["core_apps.common", "core_apps.accounts", "core_apps.profiles"]
 
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -129,7 +129,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-SITE_ID = 1 # Default site id
+SITE_ID = 1  # Default site id
 
 
 # Static files (CSS, JavaScript, Images)
