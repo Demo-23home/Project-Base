@@ -11,9 +11,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 COPY ./requirements .
 
-RUN pip wheel --wheel-dir /user/src/app/wheels\
-    -r {BUILD_ENVIRONMENT}.txt
-
+RUN pip wheel --wheel-dir /usr/src/app/wheels \
+    -r ${BUILD_ENVIRONMENT}.txt
 
 # Stage2: Python Run Stage.
 FROM python as python-run-stage
@@ -45,7 +44,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=python-build-stage /user/src/app/wheels/ /wheels
+COPY --from=python-build-stage /usr/src/app/wheels /wheels/
 
 RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
     && rm -rf /wheels/
@@ -60,7 +59,7 @@ COPY --chown=django:django ./docker/local/django/start.sh/ /start
 
 RUN sed -i "s/\r$//g" /start
 
-RUN chmod +x start
+RUN chmod +x /start
 
 COPY --chown=django:django . {APP_HOME}
 
