@@ -32,7 +32,7 @@ class User(AbstractUser):
         validators=[UsernameValidator],
     )
 
-    role = models.CharField(_("Role"), choices=Role.choices, blank=True, null=True)
+    role = models.CharField(_("Role"), choices=Role.choices, blank=True, null=True, max_length=7)
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"

@@ -16,6 +16,7 @@ class UserAdmin(BaseUserAdmin):
         "pkid",
         "id",
         "username",
+        "role",
         "email",
         "first_name",
         "last_name",
