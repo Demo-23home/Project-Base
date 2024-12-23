@@ -10,8 +10,8 @@ services:
     volumes:
       - .:/app:z
       - ./staticfiles:/app/staticfiles:z 
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"  # Added to map container port 8000 to host
     env_file:
       - .envs/.env.local
     depends_on:

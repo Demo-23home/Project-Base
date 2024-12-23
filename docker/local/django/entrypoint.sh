@@ -24,7 +24,7 @@ while True:
         break
     except psycopg2.OperationalError as error:
         sys.stderr.write("Waiting for postgres to become available.... :( \n")
-        if time.time() - start > suggest_recoverable_after: 
+        if time.time() - start > suggest_unrecoverable_after: 
             sys.stderr.write("This is taking longer than expected, that might be an indicator of an irrecoverable error, '{error}' \n".format(error))
             sys.stderr.write("You might wanna check your '.env.local' :( ")
             time.sleep(1)
