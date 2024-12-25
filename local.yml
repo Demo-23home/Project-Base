@@ -50,6 +50,20 @@ services:
     networks:
       - project_base
 
+  client: 
+    build: 
+      context: ./client
+      dockerfile: docker/local/Dockerfile
+    container_name: client
+    image: project_base_client
+    ports: 
+      - "3000:3000"
+    volumes: 
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - project_base
+      
   nginx:
     build:  
       context: ./docker/local/nginx/
