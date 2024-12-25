@@ -6,12 +6,14 @@ services:
       context: .
       dockerfile: ./docker/local/django/Dockerfile
     image: project_base_api
-    container_name: project_base_api
+    container_name: api
     volumes:
       - .:/app:z
       - ./staticfiles:/app/staticfiles:z 
-    ports:
-      - "8000:8000"  # Added to map container port 8000 to host
+    # ports:
+    #   - "8000:8000" 
+    expose: 
+      - "8000"
     env_file:
       - .envs/.env.local
     depends_on:
@@ -34,7 +36,7 @@ services:
 
   mailpit:
     image: docker.io/axllent/mailpit:v1.15
-    container_name: project_base_mailpit
+    container_name: mailpit
     ports:
       - "8025:8025"
       - "1025:1025"
@@ -48,6 +50,22 @@ services:
     networks:
       - project_base
 
+  nginx:
+    build:  
+      context: ./docker/local/nginx/
+      dockerfile: Dockerfile
+    restart: always
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./staticfiles:/app/staticfiles:z
+      - logs_store:/var/log/nginx
+    depends_on:
+      - api
+    networks: 
+      -  project_base
+
 networks:
   project_base:
     external: true
@@ -55,3 +73,4 @@ networks:
 volumes:
   project_base_postgres_data: {}
   project_base_mailpit_data: {}
+  logs_store: {}

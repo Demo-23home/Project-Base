@@ -1,7 +1,7 @@
-FROM docker.io/python:3.12.2-slim-bookworm as python 
+FROM docker.io/python:3.12.2-slim-bookworm AS python 
 
 # Stage1: Building Dependency Wheels.
-FROM python as python-build-stage
+FROM python AS python-build-stage
 
 ARG BUILD_ENVIRONMENT=local
 
@@ -15,7 +15,7 @@ RUN pip wheel --wheel-dir /usr/src/app/wheels \
     -r ${BUILD_ENVIRONMENT}.txt
 
 # Stage2: Python Run Stage.
-FROM python as python-run-stage
+FROM python AS python-run-stage
 
 ARG BUILD_ENVIRONMENT=local
 

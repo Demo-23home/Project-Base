@@ -1,3 +1,6 @@
-backend base "files, docker, authentication, nginx, celery, timestapted, contentview "
+backend base "files, docker, authentication, celery, timestapted, contentview "
 
-fullstack base "backend base + nextjs base"
+fullstack base "backend base + nextjs base, nginx"
+
+
+
