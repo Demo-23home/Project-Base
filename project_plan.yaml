@@ -1,6 +1,5 @@
-backend base "files, docker, authentication, celery, timestapted, contentview "
+backend base "files, docker, authentication, celery, redis, timestapted, contentview, nginx"
 
-fullstack base "backend base + nextjs base, nginx"
-
-
-
+fullstack base "backend base + nextjs base, nginx" done
+# places to change the project name when clone, => main urls file, celery_app.py and local.yml
+# : change all the project_base, Project Base names to the current project name that you working on

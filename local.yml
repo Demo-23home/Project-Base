@@ -10,8 +10,6 @@ services:
     volumes:
       - .:/app:z
       - ./staticfiles:/app/staticfiles:z 
-    # ports:
-    #   - "8000:8000" 
     expose: 
       - "8000"
     env_file:
@@ -19,6 +17,7 @@ services:
     depends_on:
       - postgres
       - mailpit
+      - redis
     command: /start
     networks:
       - project_base
@@ -56,8 +55,6 @@ services:
       dockerfile: docker/local/Dockerfile
     container_name: client
     image: project_base_client
-    # ports: 
-    #   - "3000:3000"
     expose: 
       - "3000"
     volumes: 
@@ -65,7 +62,37 @@ services:
       - /app/node_modules
     networks:
       - project_base
-      
+  
+  redis: 
+    image: redis:7.0-alpine3.19
+    command: redis-server --appendonly yes
+    container_name: redis
+    volumes: 
+      - project_base_redis_data:/data
+    networks: 
+      - project_base
+
+  celery-worker: 
+    <<: *api
+    image: project_base_celeryworker
+    container_name: celery-worker
+    command: /start-celeryworker
+
+  celery-beat: 
+    <<: *api
+    image: project_base_celerybeat
+    container_name: celery-beat
+    command: /start-celerybeat
+
+
+  flower: 
+    <<: *api
+    image: project_base_flower
+    container_name: flower
+    ports: 
+      - "5555:5555"
+    command: /start-flower
+
   nginx:
     build:  
       context: ./docker/local/nginx/
@@ -90,3 +117,4 @@ volumes:
   project_base_postgres_data: {}
   project_base_mailpit_data: {}
   logs_store: {}
+  project_base_redis_data: {}

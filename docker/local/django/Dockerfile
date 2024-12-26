@@ -49,20 +49,33 @@ COPY --from=python-build-stage /usr/src/app/wheels /wheels/
 RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
     && rm -rf /wheels/
 
+# entrypoint configurations    
 COPY --chown=django:django ./docker/local/django/entrypoint.sh /entrypoint
-
 RUN sed -i "s/\r$//g" /entrypoint
-
 RUN chmod +x /entrypoint
 
+# start configurations 
 COPY --chown=django:django ./docker/local/django/start.sh/ /start
-
 RUN sed -i "s/\r$//g" /start
-
 RUN chmod +x /start
 
-COPY --chown=django:django . {APP_HOME}
+# celeryworker configurations 
+COPY --chown=django:django ./docker/local/django/celery/worker/start.sh /start-celeryworker
+RUN sed -i "s/\r$//g" /start-celeryworker
+RUN chmod +x /start-celeryworker
 
+# celerybeat configurations
+COPY --chown=django:django ./docker/local/django/celery/beat/start.sh /start-celerybeat
+RUN sed -i "s/\r$//g" /start-celerybeat
+RUN chmod +x /start-celerybeat
+
+# celerybeat configurations
+COPY --chown=django:django ./docker/local/django/celery/flower/start.sh /start-flower
+RUN sed -i "s/\r$//g" /start-flower
+RUN chmod +x /start-flower
+
+# app code configurations
+COPY --chown=django:django . {APP_HOME}
 RUN chown django:django {APP_HOME}
 
 USER django

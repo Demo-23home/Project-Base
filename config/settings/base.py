@@ -1,6 +1,7 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from os import path, getenv
+from celery.schedules import crontab
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -157,3 +158,42 @@ TAGGIT_CASE_INSENSITIVE = True
 
 
 AUTH_USER_MODEL = "accounts.User"
+
+
+# Celery Settings:
+if USE_TZ:
+    CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_BROKER_URL = getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = getenv("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = ["application/json"]
+# format of messages that are set to the queue.
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+# max num to store tasks in result backend.
+CELERY_RESULT_BACKEND_MAX_RETRIES = 10
+# a task_sent event will be tracked before they are consumed by the worker
+CELERY_TASK_SEND_SENT_EVENT = True
+CELERY_RESULT_EXTENDED = True
+
+CELERY_RESULT_BACKEND_ALWAYS_RETRY = True
+
+CELERY_TASK_TIME_LIMIT = 5 * 60
+
+CELERY_TASK_SOFT_TIME_LIMIT = 60
+
+# which backend celery is going to use to store and retrieve scheduled tasks.
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+# send task related events that used in monitoring.
+CELERY_WORKER_SEND_TASK_EVENTS = True
+
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+
+CELERY_BEAT_SCHEDULE = {
+    "update-reputations-every-day": {
+        "task": "update_all_reputations",
+        "schedule": crontab(hour=0, minute=0),  # Run daily at midnight
+        "args": (),  # Optional arguments to the task
+    },
+}
