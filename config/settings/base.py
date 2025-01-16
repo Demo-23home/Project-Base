@@ -3,9 +3,9 @@ import cloudinary
 from dotenv import load_dotenv
 from os import path, getenv
 from celery.schedules import crontab
+from datetime import timedelta
 
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+## Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
 APPS_DIR = BASE_DIR / "core_apps"
@@ -16,7 +16,7 @@ if path.isfile(local_env_file):
     load_dotenv(local_env_file)
 
 
-# Application definition
+## Application definition
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -81,7 +81,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# Database
+## Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
@@ -102,6 +102,7 @@ DATABASES = {
 #     }
 # }
 
+## Password Hashers
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
@@ -111,7 +112,7 @@ PASSWORD_HASHERS = [
 ]
 
 
-# Password validation
+## Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -130,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+## Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
@@ -144,11 +145,15 @@ USE_TZ = True
 SITE_ID = 1  # Default site id
 
 
-# Static files (CSS, JavaScript, Images)
+## Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR / "staticfiles")
+
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -161,7 +166,7 @@ TAGGIT_CASE_INSENSITIVE = True
 AUTH_USER_MODEL = "accounts.User"
 
 
-# Celery Settings:
+## Celery Settings:
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
 
@@ -200,7 +205,7 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 
-# Cloudinary Settings
+## Cloudinary Settings
 CLOUDINARY_CLOUD_NAME = getenv("CLOUDINARY_CLOUD_NAME")
 CLOUDINARY_API_KEY = getenv("CLOUDINARY_API_KEY")
 CLOUDINARY_API_SECRET = getenv("CLOUDINARY_API_SECRET")
@@ -212,7 +217,7 @@ cloudinary.config(
 )
 
 
-# Cookies Settings
+## Cookies Settings
 COOKIE_NAME = "access"
 # cookie will be sent with the same site request and with cross side top-level navigation
 # this will provide balance between security and usability
@@ -223,3 +228,63 @@ COOKIE_PATH = "/"  # cookies will be accessed project wide
 COOKIE_HTTPONLY = True  # can't be accessed via js
 # HTTPS only or HTTP && HTTPS
 COOKIE_SECURE = getenv("COOKIE_SECURE", "True") == "True"
+
+
+## Rest FrameWork Settings
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("core_apps.common.cookie_auth.CookieAuthentication",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+    "PAGE_SIZE": 10,
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.AnonRateThrottle", # throttle users who are not authenticated.
+        "rest_framework.throttling.UserRateThrottle", # throttle auth-users to a given rate of requests.
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "200/day",
+        "user": "500/day",
+    },
+}
+
+SIMPLE_JWT = {
+    "SIGNING_KEY": getenv("SIGNING_KEY"), # secret crypt-key, used to sign a JWT to ensure it's authenticity.
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
+    "ROTATE_REFRESH_TOKENS": True, # return new refresh when the old one is used
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id", # the claim used in generated tokens, which will be used to store user identifiers.
+}
+
+DJOSER = {
+    "USER_ID_FIELD": "id",
+    "LOGIN_FIELD": "email",
+    "TOKEN_MODEL": None,
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "SEND_ACTIVATION_EMAIL": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password-reset/{uid}/{token}",
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": getenv("REDIRECT_URIS", "").split(","),
+    "SERIALIZERS": {
+        "user_create": "core_apps.users.serializers.CreateUserSerializer",
+        "current_user": "core_apps.users.serializers.CustomUserSerializer",
+    },
+}
+
+
+
+## Social Auth Settings
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = getenv("GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = getenv("GOOGLE_CLIENT_SECRET")
+# values we want to get from google. 
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["first_name", "last_name"]
