@@ -32,4 +32,4 @@ class GenericJsonRenderer(JSONRenderer):
         if errors is not None:
             return super(GenericJsonRenderer, self).render(data)
 
-        return json.dumps({"status_code": status_code, "object_label": data}).encode(self.charset)
+        return json.dumps({"status_code": status_code, object_label: data}).encode(self.charset)
