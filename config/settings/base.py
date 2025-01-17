@@ -232,9 +232,7 @@ COOKIE_SECURE = getenv("COOKIE_SECURE", "True") == "True"
 
 ## Rest FrameWork Settings
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "core_apps.common.cookie_auth.CookieAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("core_apps.common.cookie_auth.CookieAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_FILTER_BACKENDS": [
@@ -252,9 +250,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "SIGNING_KEY": getenv(
-        "SIGNING_KEY"
-    ),  # secret crypt-key, used to sign a JWT to ensure it's authenticity.
+    "SIGNING_KEY": getenv("SIGNING_KEY"),  # secret crypt-key, used to sign a JWT to ensure it's authenticity.
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
     "ROTATE_REFRESH_TOKENS": True,  # return new refresh when the old one is used
