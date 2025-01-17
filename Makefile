@@ -43,11 +43,14 @@ mailpit-volume:
 estate-db:
 	sudo docker compose -f local.yml exec postgres psql --username=demo --dbname=estate
 
-generate_token:
+generate-token:
 	python -c "import secrets;  print(secrets.token_urlsafe(38))"
 
-django_shell:
+django-shell:
 	sudo docker compose -f local.yml run --rm api python manage.py shell
 
-backend_shell: 
+backend-shell: 
 	sudo docker compose -f local.yml exec api sh
+
+local-server:
+	python manage.py runserver	
