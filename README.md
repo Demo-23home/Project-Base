@@ -20,7 +20,7 @@
 **Project Base** is a foundational setup designed to serve as a starting point for building scalable and production-ready web applications. It includes essential tools, libraries, and configurations for backend and full-stack projects, facilitating rapid development and deployment. The project is organized into two branches:
 
 - `backend_base`: For backend-only projects.
-- `fullstack_base`: For full-stack projects with integrated frontend and backend setups. This branch includes everything in `backend_base` plus a **Next.js** frontend for building modern, server-rendered, and static websites.
+- `client_base`: For full-stack projects with integrated frontend and backend setups. This branch includes everything in `backend_base` plus a **Next.js** frontend for building modern, server-rendered, and static websites.
 
 ## Features
 
@@ -89,23 +89,35 @@ The project follows a **modular architecture** to ensure scalability and maintai
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/YourUsername/ProjectBase.git
-   cd ProjectBase
+   git clonehttps://github.com/Demo-23home/Project-Base
+   cd Project-Base
 
 2. **Environment Variables:**
 Create a .env file in the root directory and add the following variables:
-   ```python
-    SECRET_KEY=your_django_secret_key
-    DEBUG=True
-    DATABASE_NAME=your_db_name
-    DATABASE_USER=your_db_user
-    DATABASE_PASSWORD=your_db_password
-    DATABASE_HOST=db
-    DATABASE_PORT=5432
-    REDIS_URL=redis://redis:6379
-    EMAIL_HOST=mailpit
-    EMAIL_PORT=1025
-    EMAIL_USE_TLS=False
+   ```js
+    SITE_NAME=""
+    ADMIN_URL=""
+    DJANGO_SECRET_KEY=""
+    EMAIL_PORT="1025"
+    EMAIL_HOST="mailpit"
+    DEFAULT_FROM_EMAIL=""
+    CELERY_FLOWER_USER=""
+    CELERY_FLOWER_PASSWORD=""
+    CELERY_BROKER_URL="redis://redis:6379/0"
+    CELERY_RESULT_BACKEND="redis://redis:6379/0"
+    POSTGRES_HOST="postgres"
+    POSTGRES_PASSWORD=""
+    POSTGRES_DB=""
+    POSTGRES_USER=""
+    POSTGRES_PORT="5432"
+    SIGNING_KEY=""
+    COOKIE_SECURE=""
+    CLOUDINARY_CLOUD_NAME=""
+    CLOUDINARY_API_KEY=""
+    CLOUDINARY_API_SECRET=""
+    GOOGLE_CLIENT_SECRET=""
+    GOOGLE_CLIENT_ID=""
+   REDIRECT_URIS="http://localhost:8080/api/v1/auth/google"    
     ```
 
 ### Docker Setup
@@ -113,7 +125,8 @@ Create a .env file in the root directory and add the following variables:
 1. **Build and Start Containers:**
 
    ```bash
-   docker-compose up --build
+   make build
+   ```
 2. **Access Services:**
 
     - **Backend API:** http://localhost:8000/api/v1/.
@@ -125,10 +138,10 @@ Create a .env file in the root directory and add the following variables:
 
 The project includes Swagger and DRF-YASG for API documentation. Access the API docs at:
 
-- Swagger UI: http://localhost:8000/api/docs/
+- Swagger UI: http://localhost:8000/api/v1/redoc/
 - Postman : https://documenter.getpostman.com/view/29368996/2sAYQakAss
 
-This base project provides a comprehensive setup to jumpstart your application development with minimal configuration. Feel free to customize it further to suit your specific requirements.
+This base project provides a comprehensive setup to jumpstart your application development with core configuration. Feel free to customize it further to suit your specific requirements.
 
 
 
