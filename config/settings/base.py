@@ -232,7 +232,9 @@ COOKIE_SECURE = getenv("COOKIE_SECURE", "True") == "True"
 
 ## Rest FrameWork Settings
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("core_apps.common.cookie_auth.CookieAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "core_apps.common.cookie_auth.CookieAuthentication",
+    ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_FILTER_BACKENDS": [
@@ -240,8 +242,8 @@ REST_FRAMEWORK = {
     ],
     "PAGE_SIZE": 10,
     "DEFAULT_THROTTLE_CLASSES": (
-        "rest_framework.throttling.AnonRateThrottle", # throttle users who are not authenticated.
-        "rest_framework.throttling.UserRateThrottle", # throttle auth-users to a given rate of requests.
+        "rest_framework.throttling.AnonRateThrottle",  # throttle users who are not authenticated.
+        "rest_framework.throttling.UserRateThrottle",  # throttle auth-users to a given rate of requests.
     ),
     "DEFAULT_THROTTLE_RATES": {
         "anon": "200/day",
@@ -250,12 +252,14 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "SIGNING_KEY": getenv("SIGNING_KEY"), # secret crypt-key, used to sign a JWT to ensure it's authenticity.
+    "SIGNING_KEY": getenv(
+        "SIGNING_KEY"
+    ),  # secret crypt-key, used to sign a JWT to ensure it's authenticity.
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
-    "ROTATE_REFRESH_TOKENS": True, # return new refresh when the old one is used
+    "ROTATE_REFRESH_TOKENS": True,  # return new refresh when the old one is used
     "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id", # the claim used in generated tokens, which will be used to store user identifiers.
+    "USER_ID_CLAIM": "user_id",  # the claim used in generated tokens, which will be used to store user identifiers.
 }
 
 DJOSER = {
@@ -275,12 +279,10 @@ DJOSER = {
     },
 }
 
-
-
 ## Social Auth Settings
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = getenv("GOOGLE_CLIENT_ID")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = getenv("GOOGLE_CLIENT_SECRET")
-# values we want to get from google. 
+# values we want to get from google.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
@@ -288,3 +290,10 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["first_name", "last_name"]
+
+
+
+AUTHENTICATION_BACKENDS = [
+    "social_core.backends.google.GoogleOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+]

@@ -106,21 +106,27 @@ class CustomProviderAuthView(ProviderAuthView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         provider_res = super().post(request, *args, **kwargs)
 
-        if provider_res == status.HTTP_201_CREATED:
+        if provider_res.status_code == status.HTTP_201_CREATED:
             access_token = provider_res.data.get("access")
             refresh_token = provider_res.data.get("refresh")
 
             if access_token and refresh_token:
-                set_auth_cookies(provider_res, access_token, refresh_token)
+                set_auth_cookies(
+                    provider_res,
+                    access_token=access_token,
+                    refresh_token=refresh_token,
+                )
 
                 provider_res.data.pop("access", None)
                 provider_res.data.pop("refresh", None)
 
-                provider_res.data["message"] = "You are Logged in Successfully."
+                provider_res.data["message"] = "You are logged in Successful."
             else:
-                provider_res.data["message"] = "Login Failure!"
+                provider_res.data["message"] = (
+                    "Access or refresh token not found in provider response"
+                )
                 logger.error(
-                    "Access or Refresh Tokens are not found in the Provider Response data!"
+                    "Access or refresh token not found in provider response data"
                 )
 
         return provider_res

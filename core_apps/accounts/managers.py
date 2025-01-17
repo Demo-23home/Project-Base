@@ -16,7 +16,9 @@ def validate_email_address(email: str):
 
 class UserManager(DjangoUserManager):
 
-    def _create_user(self, username: str, email: str, password: str, **extra_fields):
+    def _create_user(
+        self, username: str, email: str, password: str | None, **extra_fields
+    ):
         if not username:
             raise ValueError(_("A username must be provided !"))
 
@@ -26,7 +28,9 @@ class UserManager(DjangoUserManager):
         email = self.normalize_email(email)
         validate_email_address(email)
 
-        global_user_model = apps.get_model(self.model._meta.app_label, self.model._meta.object_name)
+        global_user_model = apps.get_model(
+            self.model._meta.app_label, self.model._meta.object_name
+        )
 
         username = global_user_model.normalize_username(username)
 
@@ -35,17 +39,26 @@ class UserManager(DjangoUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, username: str, email: str, password: str, **extra_fields: Any) -> Any:
+    def create_user(
+        self,
+        username: str,
+        email: str | None = None,
+        password: str | None = None,
+        **extra_fields: Any
+    ) -> Any:
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(username, email, password, **extra_fields)
 
     def create_superuser(
-        self, username: str, email: str, password: str, **extra_fields: Any
+        self,
+        username: str,
+        email: str | None,
+        password: str | None,
+        **extra_fields: Any
     ) -> Any:
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
-        extra_fields.setdefault("role", self.model.Role.ADMIN)
 
         if extra_fields.get("is_staff") is not True:
             raise ValueError("A superuser must be a STAFF!")
