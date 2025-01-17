@@ -262,6 +262,8 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",  # the claim used in generated tokens, which will be used to store user identifiers.
 }
 
+
+## Djoser Settings
 DJOSER = {
     "USER_ID_FIELD": "id",
     "LOGIN_FIELD": "email",
@@ -290,7 +292,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["first_name", "last_name"]
-
 
 
 AUTHENTICATION_BACKENDS = [
