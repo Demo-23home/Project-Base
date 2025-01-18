@@ -49,6 +49,20 @@ services:
     networks:
       - project_base
   
+  client: 
+    build: 
+      context: ./client
+      dockerfile: docker/local/Dockerfile
+    container_name: client
+    image: project_base_client
+    expose: 
+      - "3000"
+    volumes: 
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - project_base
+  
   redis: 
     image: redis:7.0-alpine3.19
     command: redis-server --appendonly yes
@@ -69,7 +83,6 @@ services:
     image: project_base_celerybeat
     container_name: celery-beat
     command: /start-celerybeat
-
 
   flower: 
     <<: *api
